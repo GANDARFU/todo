@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>to-do list</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+    
+        body {
+            display: flex;
+            justify-content: center;
+            background-color: whitesmoke;
+        }
+ 
+        p { 
+            display: flex;
+            justify-content: center;
+            font-size: xx-large;
+            font-weight: bold;
+        }
+        ul {
+            display: flex;
+            flex-direction: column-reverse;
+            margin-bottom: 20px;
+        }
+        
+        .header button {
+            position: absolute;
+            right: 18%;
+            margin-top: -30px;
+        }
+
+        .header i {
+            font-size: 22px;
+        }
+
+        .to-do {
+            margin-top: 40px;
+            width: 60%;
+        }
+
+        .textInsert {
+            border: none;
+            padding: 10px;
+            border-radius: 10px;
+            outline: none;
+            width: 90%;
+        }
+        .divInsert {
+            padding: 10px;
+            background-color:rgb(202, 8, 228);
+            border-radius: 10px;
+            display: flex;
+            box-shadow: 6px 5px 10px 0px grey;
+        }
+
+        button{
+            width: 10%;
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            outline: none;
+        }
+        .bx-plus{
+            font-size: 30px;
+            margin-left: 10px;
+            background-color: rgb(0, 0, 0);
+            border-radius: 50%;
+            padding: 5px;
+            color: white;
+        }
+        .divli {
+            margin-top: 20px;
+            padding: 10px;
+            background: lightgrey;
+            border-radius: 10px;
+            box-shadow: 6px 5px 10px 0px rgb(223, 80, 223);
+            display: flex;
+            align-items: center;
+        }
+        .divli span{
+            width: 80%;
+            color: dimgray
+        }
+        .divli input{
+            width: 10%;
+            outline: none;
+            accent-color: currentcolor;
+        }
+        .div i {
+            font-size: 22px;
+            color:brown;
+        }
+        li{
+            list-style-type: none;
+        }
+
+        .line-through {
+            text-decoration: line-through;
+        }
+        
+        @media (max-width: 775px){
+            input{
+                width: 70%;
+            }
+
+            .divInsert button{
+                width: 30%;
+            }
+            
+            i {
+                font-size: 30px;
+                padding: 0px;
+            }
+            
+            p{
+                font-size: x-large;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="app" class="to-do">
+        <div class="header">
+            <p>Charles Todo-List</p>
+            <button @click="deleteAllItems"><i class="bx bxs-trash-alt"></i></button>
+        </div>
+        <hr />
+        <br />
+        <div class="divInsert">
+            <input class="textInsert" type="text" v-model="newItem" @keypress.enter="addItem" placeholder="adicionar novo item..." />
+            <button @click="addItem"><i class='bx bx-plus'></i></button>
+        </div>
+        <ul>
+            <li v-for="(item, index) in items" :key="index" class="divli">
+                <input type="checkbox" :checked="item.status === 'checked'" @change="toggleDone(index)" />
+                <span :class="{ 'line-through': item.status === 'checked'}">{{ item.item }}</span>
+                <button @click="removeItem(index)"><i class='bx bx-trash'></i></button>
+            </li>
+        </ul>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data() {
+                return {
+                    newItem: '',
+                    items: JSON.parse(localStorage.getItem('todolist')) || []
+                }
+            },
+            methods: {
+                addItem() {
+                    if (this.newItem.trim() === '') {
+                        this.newItem = '';
+                        return;
+                    }
+                    if (this.items.length >= 15) {
+                        alert('Limite máximo de 15 linhas atingido!');
+                        return;
+                    }
+                    this.items.push({ item: this.newItem, status: '' });
+                    this.updateDB();
+                    this.newItem = '';
+                },
+                deleteAllItems() {
+                    this.items = [];
+                    this.updateDB();
+                },
+                toggleDone(index) {
+                    this.items[index].status = this.items[index].status === 'checked' ? '' : 'checked';
+                    this.updateDB();
+                },
+                removeItem(index) {
+                    this.items.splice(index, 1);
+                    this.updateDB();
+                },
+                updateDB() {
+                    localStorage.setItem('todolist', JSON.stringify(this.items));
+                }
+            }
+        });
+    </script>
+</body>
+</html>
