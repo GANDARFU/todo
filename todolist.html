@@ -188,7 +188,7 @@
                 editItem(index){
                     const itemToEdit = this.items[index];
                     const editedItem = prompt("Editar item:", itemToEdit.item);
-                    if (editedItem !== null) {
+                    if (editedItem) {
                         this.items[index].item = editedItem;
                         this.updateDB();
                     }
