@@ -145,6 +145,7 @@
                 <input type="checkbox" :checked="item.status === 'checked'" @change="toggleDone(index)" />
                 <span :class="{ 'line-through': item.status === 'checked'}">{{ item.item }}</span>
                 <button @click="removeItem(index)"><i class='bx bx-trash'></i></button>
+                <button @click="editItem(index)"><i class='bx bx-edit-alt'></i></button>
             </li>
         </ul>
     </div>
@@ -183,6 +184,14 @@
                 removeItem(index) {
                     this.items.splice(index, 1);
                     this.updateDB();
+                },
+                editItem(index){
+                    const itemToEdit = this.items[index];
+                    const editedItem = prompt("Editar item:", itemToEdit.item);
+                    if (editedItem !== null) {
+                        this.items[index].item = editedItem;
+                        this.updateDB();
+                    }
                 },
                 updateDB() {
                     localStorage.setItem('todolist', JSON.stringify(this.items));
